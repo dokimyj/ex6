@@ -33,17 +33,42 @@
 		<input type=button id=add value=파일추가>
 		<button>Upload!</button>
 	</form>
+	<form action="newUpload" method="post" enctype="multipart/form-data">
+		<input type=text name=name>
+		<div id=files>
+			
+		</div>
+		<input type=button id=add1 value=파일추가>
+		<button>Upload!</button>
+	</form>
 </body>
 <script>
 	var i=0;
 	$('#add').click(function(){
-		$('#file').append("<p title=k"+i+"><input type=file name=f"+i+"><span name=k"+i+">x</span></p>");
-		i++;
-	});
-	$('#file>p>span').click(function(){
-		if($('#file').prop('title')==$('#file').prop('name:last-child')){
-			$('#file').prop('title').remove();
+		if(i<5){
+			$('#file').append("<p><input type=file name=f1><span class=del>x</span></p>");
+			i++;
+		}else{
+			alert('5개까지만 첨부 가능합니다.');
 		}
+	});
+	$('#file').on("click",".del", function(){
+		$(this).parent().remove();
+		i--;
+	});
+	
+	var j=0;
+	$('#add1').click(function(){
+		if(j<5){
+			$('#files').append("<p><input type=file name=x"+j+"><span class=del1>x</span></p>");
+			j++;
+		}else{
+			alert('5개까지만 첨부 가능합니다.');
+		}
+	});
+	$('#files').on("click",".del1", function(){
+		$(this).parent().remove();
+		j--;
 	});
 </script>
 </html>

@@ -1,30 +1,49 @@
 package com.choa.ex6;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.choa.file.FileService;
 
 @Controller
 @RequestMapping(value="/file/**")
 public class FileController {
 	@RequestMapping(value="fileUpload", method=RequestMethod.GET)
 	public void fileUpload(){
-		System.out.println("test");
+		
 	}
 	
+	//파일삭제(폴더 내에서도 완전히 삭제하자)
+	@RequestMapping(value="fileDelete", method=RequestMethod.GET)
+	public void fileDelete(String filename, HttpSession session) throws Exception{
+		FileService fileService=new FileService();
+		fileService.fileDelete(session, filename);
+	}
 	//단일파일 업로드
 	/*@RequestMapping(value="fileUpload", method=RequestMethod.POST)*/
 	public void fileUpload(MultipartHttpServletRequest request){ 
 		
 	}
 	
-	/*@RequestMapping(value="fileUpload", method=RequestMethod.POST)*/
-	public void fileUpload(MultipartFile f1){
-		
+	@RequestMapping(value="fileUpload", method=RequestMethod.POST)
+	public ModelAndView fileUpload(MultipartFile f1, HttpSession session) throws Exception{
+		FileService fileService=new FileService();
+		String fname=fileService.fileSave(session, f1);
+		ModelAndView mv=new ModelAndView();
+		mv.setViewName("file/fileView");
+		mv.addObject("filename", fname);
+		mv.addObject("oname", f1.getOriginalFilename());
+		return mv;
 	}
 	
 	/*@RequestMapping(value="fileUpload", method=RequestMethod.POST)*/
@@ -59,13 +78,14 @@ public class FileController {
 		}
 	}
 	
-	@RequestMapping(value="sameMultiFileUpload", method=RequestMethod.POST)
+	/*@RequestMapping(value="sameMultiFileUpload", method=RequestMethod.POST)*/
 	public void sameMultiFileUpload(SameMultiFileDTO sdto){ //아예 DTO에 멀티파트파일 배열을 만들고 배열로 받자!
 		for(int i=0;i<sdto.getF1().length;i++){
 			System.out.println(sdto.getF1()[i].getOriginalFilename());
 		}
 	}
 	
+	@RequestMapping(value="sameMultiFileUpload", method=RequestMethod.POST)
 	public void sameMultiFileUpload(MultipartHttpServletRequest request){ //매개변수 추가시 다중파일 업로드 가능
 		List<MultipartFile> al=request.getFiles("f1"); //file's'로 불러와서 파일 배열로 받자!
 		for(MultipartFile f:al){
@@ -75,7 +95,44 @@ public class FileController {
 	/*참고: request로 받는 경우 request.getFileNames()은 파라미터 이름을 모를 때 해당 리퀘스트 내의 파라미터 이름을 Iterator로 뽑아옴.
 	 * 	또한, 파라미터 이름이 서로 다른 다중 파일(개수는 정해져 있음)의 경우 request.getFileMap(파라미터이름)으로 받아오면 각 파라미터별로 받아올 수 있음.*/
 	
-	//다중파일 업로드-파라미터 이름이 같고, 파일 개수도 유동적일 때
+	//다중파일 업로드-파라미터 이름이 고정적이고, 파일 개수는 유동적일 때
+	//다중파일 업로드-파라미터 이름이 같고, 파일 개수가 고정되었을 때
+		/*@RequestMapping(value="upload", method=RequestMethod.POST)*/
+		public void upload(MultipartFile [] f1){ //아예 멀티파트파일 배열 형태로 받자!
+			for(int i=0;i<f1.length;i++){
+				System.out.println(f1[i].getOriginalFilename());
+			}
+		}
+		
+		/*@RequestMapping(value="upload", method=RequestMethod.POST)*/
+		public void upload(SameMultiFileDTO sdto){ //아예 DTO에 멀티파트파일 배열을 만들고 배열로 받자!
+			for(int i=0;i<sdto.getF1().length;i++){
+				System.out.println(sdto.getF1()[i].getOriginalFilename());
+			}
+		}
+		
+		@RequestMapping(value="upload", method=RequestMethod.POST)
+		public void upload(MultipartHttpServletRequest request){ //매개변수 추가시 다중파일 업로드 가능
+			List<MultipartFile> al=request.getFiles("f1"); //file's'로 불러와서 파일 배열로 받자!
+			for(MultipartFile f:al){
+				System.out.println(f.getOriginalFilename());
+			}
+		}
 	
 	//다중파일 업로드-파라미터 이름도 다르고, 파일 개수도 유동적일 때
+	//일단 멀티파트파일 객체로는 받을 수 없으며, DTO도 전부 다르므로 사용 불가. => 멀티파트http서블릿리퀘스트로만 가능.
+	
+	@RequestMapping(value="newUpload", method=RequestMethod.POST)
+	public void newUpload(MultipartHttpServletRequest request){ //매개변수 추가시 다중파일 업로드 가능
+		Iterator<String> it=request.getFileNames(); 
+		//파일이 들어있는 파라미터를 모르므로 getFileNames로 파일객체인 것들의 이름만 불러와서 파라미터 이름을 확인하여 이것들을 받아냅시다.
+		ArrayList<MultipartFile> al=new ArrayList();
+		while(it.hasNext()){
+			MultipartFile m=request.getFile(it.next());
+			al.add(m);
+		}
+		for(MultipartFile multi:al){
+			System.out.println(multi.getOriginalFilename());
+		}
+	}
 }
