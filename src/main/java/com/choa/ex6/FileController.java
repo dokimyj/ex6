@@ -1,8 +1,12 @@
 package com.choa.ex6;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,6 +18,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.choa.file.FileService;
+import com.choa.util.SeDTO;
 
 @Controller
 @RequestMapping(value="/file/**")
@@ -21,6 +26,45 @@ public class FileController {
 	@RequestMapping(value="fileUpload", method=RequestMethod.GET)
 	public void fileUpload(){
 		
+	}
+	@RequestMapping(value="seUpload", method=RequestMethod.POST)
+	public String seUpload(SeDTO seDTO, HttpSession session) throws Exception, IOException{
+		/*String callback=seDTO.getCallback();
+		String callback_func=seDTO.getCallback_func();
+		String oname=seDTO.getFiledata().getOriginalFilename();
+		String defaultPath=session.getServletContext().getRealPath("resources/upload");
+		
+		//make directory if not exists
+		File f=new File(defaultPath);
+		if(!f.exists()){
+			f.mkdirs();
+		}
+		
+		//the name that would be saved in the directory
+		String realName=UUID.randomUUID().toString()+oname.substring(oname.indexOf("."));
+		
+		//the file that would be saved in the directory
+		
+		seDTO.getFiledata().transferTo(new File(f, realName));
+		
+		String file_results="&bNewLine=true&sFileName="+oname+"&sFileURL=/ex6/resources/upload/"+realName; //왜 이걸 쓸까?
+		//아무튼 필요한 부분은 아래와 같다.		*/	
+		FileService fileService=new FileService();
+		return fileService.seUpload(session, seDTO);		
+	}
+	
+	
+	
+	//클릭시 파일 다운로드
+	@RequestMapping(value="fileDown", method=RequestMethod.GET)
+	public ModelAndView fileDown(String fileName, HttpSession session, String oname){
+		String realPath=session.getServletContext().getRealPath("resources/upload");
+		File f=new File(realPath, fileName);
+		ModelAndView mv=new ModelAndView();
+		mv.setViewName("download"); //클래스 참조변수와 동일한 view name으로.
+		mv.addObject("oname", oname); //원래 파일이름으로 다운받도록 설정하기 위해 받아온 oname을 다시 Download.java로 보내기 위함
+		mv.addObject("downloadFile", f); //여기까지만 쓰면 download.jsp가 필요할 것임.
+		return mv;
 	}
 	
 	//파일삭제(폴더 내에서도 완전히 삭제하자)

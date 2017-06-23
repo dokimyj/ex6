@@ -19,7 +19,18 @@
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
 		<beans:property name="suffix" value=".jsp" />
+		<beans:property name="order" value="1"/>
 	</beans:bean>
+	
+	<beans:bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<!-- 문제: 어떤건 위에 기본을 써야되고, 어떤건 이쪽으로 받아와야 함. 
+			해결법: 이 클래스는 자주 실행되지 않기 때문에 먼저 조건을 달아 이 쪽을 검색한 뒤 안되면 위 기본클래스를 사용하도록 해야 함.-->
+		<beans:property name="order" value="0"/> <!-- 이 클래스를 먼저 검색조건으로 실행시킴 -->
+	</beans:bean>
+	
+	<beans:bean class="com.choa.file.Download" id="download"></beans:bean>
+	<!-- 이 클래스를 반드시 생성해야 함! -->
+	
 	
 	<context:component-scan base-package="com.choa.ex6" />
 	<context:component-scan base-package="com.choa.notice" />

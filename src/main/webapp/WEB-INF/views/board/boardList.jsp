@@ -35,7 +35,7 @@
 	<span id='backwards'>&lt;</span>
 </c:if>
 <c:forEach begin="${listInfo.firstNum }" end="${listInfo.lastNum }" step="1" var="i">
-	<span id='curPage${i }'>${i }</span>
+	<span class='curPage'>${i }</span>
 </c:forEach>
 <c:if test="${listInfo.curBlock ne listInfo.totalBlock }">
 	<span id='forwards'>&gt;</span>
@@ -47,16 +47,22 @@
 		$('#curPage').val(${listInfo.firstNum-1});
 		$('#f').submit();
 	});
-	for(i=${listInfo.firstNum};i<${listInfo.lastNum};i++){
-		$('#curPage'+i).click(function(){
-			$('#curPage').val(i);
-			$('#f').submit();
-		});
-	}
+
 	$('#forwards').click(function(){
 		$('#curPage').val(${listInfo.lastNum+1});
 		$('#f').submit();
 	});
+	
+	var parameter = "&search=${listInfo.search}&find=${listInfo.find}";	
+	$(".go").click(function() {
+			
+		document.frm.curPage.value = $(this).attr("id");
+		document.frm.search.value = '${listInfo.search}';
+		document.frm.find.value = '${listInfo.find}';
+		document.frm.submit();
+			/* location.href= "${board}List?curPage="+cur+parameter; */
+	});
+		
 	var m='${message}';
 	if(m!=''){ //글쓰기하고 message가 flashAttribute로 전송된 경우에만 alert창을 띄움
 		alert(m); 
