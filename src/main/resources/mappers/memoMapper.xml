@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="memoMapper">
+	<select id="list" resultType="com.choa.memo.MemoDTO">
+		select * from MEMO2 order by NUM desc
+	</select>
+	<insert id="write" parameterType="com.choa.memo.MemoDTO">
+		insert into MEMO2 values(COMMENT_SEQ.NEXTVAL, #{writer}, #{content}, SYSDATE)
+	</insert>
+	<update id="update" parameterType="com.choa.memo.MemoDTO">
+		update MEMO2 set CONTENT=#{content} where NUM=#{num}
+	</update>
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete MEMO2 where NUM=#{num}
+	</delete>
+	<select id="view" resultType="com.choa.memo.MemoDTO" parameterType="java.lang.Integer">
+		select * from MEMO2 where NUM=#{num}
+	</select>
+</mapper>

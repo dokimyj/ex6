@@ -22,6 +22,14 @@
 		<!-- ojdbc는 저작권 문제로 그냥 자동 다운로드 안됨!=>repositories라는, 사설 라이브러리를 올려놓은 사이트를 설정할 태그를 사용할 예정 -->
 		
 	<dependencies>
+		<!-- 자료를 JSON형태로 바로 변환시켜주는 Jackson Databind -->
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+   			<groupId>com.fasterxml.jackson.core</groupId>
+    		<artifactId>jackson-databind</artifactId>
+    		<version>2.8.5</version>
+		</dependency>
+		
 		<!-- 파일 업로드를 위한 commons-fileupload -->
 		<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
 		<dependency>
