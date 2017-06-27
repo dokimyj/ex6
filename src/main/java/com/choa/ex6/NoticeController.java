@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +24,7 @@ public class NoticeController {
 	
 	@RequestMapping(value="noticeList", method=RequestMethod.GET)
 	public String list(Model model, ListInfo listInfo) throws Exception{
+		System.out.println(noticeService.boardView(1000).getTitle());
 		model.addAttribute("list", noticeService.boardList(listInfo));
 		model.addAttribute("board", "notice");
 		model.addAttribute("listInfo", listInfo);
@@ -88,4 +90,5 @@ public class NoticeController {
 		rd.addAttribute("board", "notice");
 		return "redirect:noticeList?curPage=1";
 	}
+
 }
