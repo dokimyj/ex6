@@ -2,8 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
 	
 	<!-- properties파일을 읽어오는 새 객체를 생성 -->
@@ -30,6 +32,27 @@
 		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactoryBean"></constructor-arg>
 	</bean>
 		
+	<bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
+		<!-- 데이터소스가 Connection객체를 받고 있으므로 이 클래스를 생성하여 롤백/커밋을 수동으로 할 예정임 -->
+		<property name="dataSource" ref="dataSource"> <!-- 데이터 소스 객체를 setter로 입력 --> </property>
+	</bean>
+	
+	<tx:annotation-driven/>
+	
+	<!-- <tx:advice id="transactionManager" transaction-manager="dataSourceTransactionManager">
+		공통로직을 위 개체로 지정
+		<tx:attributes>
+			<tx:method name="*" rollback-for="Exception"/>
+			name: 어떤 메소드를 실행할 것인가? -> 모든 메소드("*") / rollback-for: 롤백은 언제 적용할 것인가? -> Exception 발생시 
+		</tx:attributes>
+	</tx:advice>	
+	
+	<aop:config>
+		<aop:pointcut expression="execution(* com.choa.table..TableService.*(..))" id="requiredTx"/>
+		위의 txadvice에 이미 내용이 있기 때문에 before/after/around등 설정 불필요, aspect설정도 불필요
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="requiredTx"></aop:advisor>		
+	</aop:config> -->
+	
 	<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
 		<property name="defaultEncoding" value="utf-8"></property>
 	</bean>	

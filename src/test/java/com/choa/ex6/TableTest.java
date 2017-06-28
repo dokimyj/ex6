@@ -20,8 +20,8 @@ public class TableTest extends Abstract4Test {
 		TableADTO tableADTO=new TableADTO();
 		tableADTO.setTitle("t2");
 		tableADTO.setWriter("t2");
-		tableADTO.setNum(2);
-		int result=tableService.insertTable(tableADTO, 1);
+		tableADTO.setNum(4);
+		int result=tableService.insertTable(tableADTO, 4);
 		
 		Assert.assertNotEquals(0, result);
 	}
